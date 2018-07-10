@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <title>SignalR Demo (Nothing fancy!)</title>
+    <link rel="stylesheet" href="https://unpkg.com/picnic">
+    <link rel="stylesheet" href="./css/site.css" type="text/css" />
+</head>
+<body style="zoom: 1;">
+    <nav>
+        <a href="/" class="brand"><span>HoNoSoFt.SignalR.Demo</span></a>
+    </nav>
+    <main class="flex center">
+        <div>
+            <p>Voici une petite démo avec SignalR.</p>
+            <p><strong>SignalR Hub:</strong> <i>hubs/toast</i></p>
+        </div>
+
+        <div class="third" id="toastContainer">
+        </div>
+
+
+    </main>
+
+    <script src="./js/signalr.js"></script>
+    <script>
+        var _toastContainer = document.getElementById("toastContainer");
+
+        function addData(sender, importance, message) {
+            var span = document.createElement("span");
+            span.innerText = "[" + importance + "] " + sender + " : " + message;
+            span.className = "button stack " + getClassFromImportance(importance);
+            _toastContainer.appendChild(span);
+        }
+
+        function getClassFromImportance(importance) {
+            switch (importance) {
+                case "High": return "error";
+                case "Medium": return "warning";
+                case "Low": return "success";
+            }
+        }
+
+        // Doit s'alligner avec ce que vous avez indiqué dans le Startup.cs
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/toast")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        connection.on("SendNotification", function (sender, toastImportance, message) {
+            addData(sender, toastImportance, message);
+        });
+
+        connection.start().then(function () {
+            // Mettre du code ici quand ça commence.
+            var p = document.createElement("p");
+            p.innerText = "Connection au hub Toast réussi!";
+            p.className = "connected";
+            _toastContainer.appendChild(p);
+        });
+    </script>
+</body>
+</html>

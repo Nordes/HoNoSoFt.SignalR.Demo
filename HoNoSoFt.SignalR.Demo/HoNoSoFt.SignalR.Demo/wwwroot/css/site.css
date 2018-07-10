@@ -1,0 +1,14 @@
+﻿#toastContainer {
+    height: 300px;
+    border: 1px #ddd solid;
+    overflow: scroll;
+}
+
+main {
+    padding: 80px 3em 0 3em;
+}
+
+.connected {
+    color: forestgreen;
+    font-weight: bold;
+}
